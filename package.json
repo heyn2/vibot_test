@@ -8,14 +8,17 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
-
- "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,css}": ["prettier --write"]
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   },
-
   "dependencies": {
     "next": "16.0.1",
     "react": "19.2.0",
@@ -32,6 +35,7 @@
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
