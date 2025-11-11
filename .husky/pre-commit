@@ -1,1 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 변경된 파일만 빠르게 포맷/린트
 npx lint-staged
