@@ -1,66 +1,78 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-/* Design tokens */
+/* =============================================================================
+   VIBOT Admin — Global Design Tokens (Light Only)
+   - 목적: 팀 공통으로 쓰는 색상/타이포/효과 토큰 + 최소 유틸 제공
+   - 주의: 컴포넌트 모양/상태(버튼, 인풋 등)는 각 컴포넌트 파일에서 정의
+   - 수정 규칙: 변경 시 PR에 '디자인 토큰 변경' 라벨 지정 후 팀 합의 반영
+============================================================================= */
+
 @layer base {
   :root {
-    /* Brand / Primary */
+    /* === Primary (브랜드 노랑) === */
     --color-primary: #ffe812;
     --color-primary-hover: #ffd60a;
     --color-primary-pressed: #f4ca00;
+    --gradient-primary: linear-gradient(135deg, #ffe812, #ffd60a);
 
-    /* Accent Blue */
+    /* === Accent (보조 블루) === */
     --color-accent: #1846f2;
     --color-accent-hover: #0f36d3;
     --color-accent-pressed: #0a2baa;
+    --gradient-accent: linear-gradient(135deg, #1846f2, #0f36d3);
 
-    /* Background & Surface */
-    --color-bg-app: #f9fafb;
-    --color-surface: #ffffff;
-    --color-glass: rgba(255, 255, 255, 0.7);
-    --color-hover-surface: #f5f6f8;
-    --color-secondary-bg: #f5f6f8;
+    /* === Background & Surface === */
+    --color-bg-app: #f9fafb; /* 앱 전체 배경 */
+    --color-surface: #ffffff; /* 카드/모달 배경 */
+    --color-glass: rgba(255, 255, 255, 0.7); /* 글래스 효과 배경 */
+    --color-hover-surface: #f5f6f8; /* Hover 배경 */
+    --color-secondary-bg: #f5f6f8; /* 입력/보조 섹션 배경 */
     --color-sidebar-border: rgba(0, 0, 0, 0.05);
 
-    /* Text */
-    --color-text-primary: #1b1c1d;
-    --color-text-secondary: #5e5e6d;
-    --color-text-muted: #5e5e6d;
-    --color-text-placeholder: #9ca3af;
+    /* === Text === */
+    --color-text-primary: #1b1c1d; /* 제목/본문 */
+    --color-text-secondary: #5e5e6d; /* 부가설명 */
+    --color-text-muted: #5e5e6d; /* 비활성/서브 */
+    --color-text-placeholder: #9ca3af; /* 입력 placeholder */
 
-    /* Semantic */
+    /* === Semantic === */
     --color-success: #22c55e;
     --color-warning: #facc15;
     --color-error: #ef4444;
 
-    /* UI Elements */
-    --color-border: #e5e7eb;
-    --color-border-muted: #e5e7eb;
-    --color-input-bg: #f5f6f8;
-    --color-switch-bg: #d1d5db;
-    --color-icon-neutral: #6b7280;
-    --focus-ring: rgba(255, 232, 18, 0.4);
+    /* === UI Elements === */
+    --color-border: #e5e7eb; /* 구분선/경계선 */
+    --color-border-muted: #e5e7eb; /* 비활성 경계선 */
+    --color-input-bg: #f5f6f8; /* 입력 기본 배경 */
+    --color-switch-bg: #d1d5db; /* 토글 비활성 */
+    --color-icon-neutral: #6b7280; /* 일반 아이콘 */
+    --focus-ring: rgba(255, 232, 18, 0.4); /* 포커스 하이라이트 */
 
-    /* Effects */
+    /* === Effects === */
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
-    --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+    --glass-blur: blur(10px);
 
-    /* Typography scale (for semantic elements below) */
-    --text-2xl: 1.5rem; /* 24px */
-    --text-xl: 1.25rem; /* 20px */
-    --text-lg: 1.125rem; /* 18px */
-    --text-base: 1rem; /* 16px */
+    /* === Typography Scale === */
+    --text-2xl: 1.5rem; /* 24px — h1 */
+    --text-xl: 1.25rem; /* 20px — h2 */
+    --text-lg: 1.125rem; /* 18px — h3 */
+    --text-base: 1rem; /* 16px — h4, p, label */
+
+    /* === Motion === */
+    --ease-fast: 120ms ease;
   }
 
+  /* 문서 기본값 */
   html,
   body {
     background-color: var(--color-bg-app);
     color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Base typography mapping (semantic) */
+  /* Typography (요구사항 그대로 매핑) */
   h1 {
     font-size: var(--text-2xl);
     font-weight: 500;
@@ -85,120 +97,177 @@
     font-size: var(--text-base);
     font-weight: 500;
   }
-
-  /* Common surfaces */
-  .card-surface {
-    background: var(--color-surface);
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem; /* 8px */
-  }
-
-  .glass-surface {
-    background: var(--color-glass);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--color-sidebar-border);
-    border-radius: 0.75rem; /* 12px */
-  }
 }
 
-/* Component utilities built on tokens */
+/* =============================================================================
+   Component tokens — 버튼/인풋 등 시각 톤 정의
+============================================================================== */
 @layer components {
-  /* Buttons */
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem; /* 6px */
-    padding: 0.5rem 0.75rem; /* px-3 py-2 */
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500;
-    color: #000; /* text-black for yellow bg */
-    background: var(--color-primary);
-    transition:
-      background-color 120ms ease,
-      box-shadow 120ms ease,
-      opacity 120ms ease;
-  }
-  .btn-primary:hover {
-    background: var(--color-primary-hover);
-  }
-  .btn-primary:active {
-    background: var(--color-primary-pressed);
-  }
-  .btn-primary:disabled {
-    opacity: 0.5;
-  }
-  .btn-primary:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--focus-ring);
-  }
-
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .btn-ghost,
   .btn-accent {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    gap: 0.375rem;
+    border-radius: 999px;
+    padding: 0.65rem 1.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition:
+      transform var(--ease-fast),
+      box-shadow var(--ease-fast),
+      background-color var(--ease-fast);
+  }
+
+  .btn-primary {
+    color: #111826;
+    background: var(--color-primary);
+    border: 1px solid transparent;
+    box-shadow: 0 12px 30px rgba(255, 232, 18, 0.35);
+  }
+  .btn-primary:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 18px 34px rgba(255, 232, 18, 0.45);
+  }
+  .btn-primary:active {
+    background: var(--color-primary-pressed);
+    transform: translateY(0);
+    box-shadow: 0 8px 18px rgba(255, 232, 18, 0.25);
+  }
+
+  .btn-secondary {
+    color: #111826;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  }
+  .btn-secondary:hover {
+    background: #f9fafb;
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    color: #111826;
+    border: 1px solid #d1d5db;
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background: #f9fafb;
+  }
+
+  .btn-ghost {
+    color: #111826;
+    border: 1px solid transparent;
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    background: #f5f6f8;
+  }
+
+  .btn-accent {
     color: #fff;
     background: var(--color-accent);
-    transition:
-      background-color 120ms ease,
-      box-shadow 120ms ease,
-      opacity 120ms ease;
+    border: 1px solid transparent;
+    box-shadow: 0 14px 28px rgba(24, 70, 242, 0.35);
   }
   .btn-accent:hover {
     background: var(--color-accent-hover);
-  }
-  .btn-accent:active {
-    background: var(--color-accent-pressed);
-  }
-  .btn-accent:disabled {
-    opacity: 0.5;
-  }
-  .btn-accent:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--focus-ring);
+    transform: translateY(-1px);
   }
 
-  /* Surfaces */
-  .surface {
-    background: var(--color-surface);
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-  }
-  .glass {
-    background: var(--color-glass);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--color-sidebar-border);
-    border-radius: 0.75rem;
+  .btn-gradient-primary {
+    color: #111826;
+    border-radius: 999px;
+    padding: 0.65rem 1.35rem;
+    font-weight: 600;
+    background-image: var(--gradient-primary);
+    border: 1px solid transparent;
+    box-shadow: 0 18px 34px rgba(255, 232, 18, 0.45);
   }
 
-  /* Inputs */
+  .btn-gradient-accent {
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.65rem 1.35rem;
+    font-weight: 600;
+    background-image: var(--gradient-accent);
+    border: 1px solid transparent;
+    box-shadow: 0 14px 32px rgba(37, 99, 235, 0.45);
+  }
+
   .input-base {
     width: 100%;
-    border-radius: 0.375rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-input-bg);
-    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: #f5f6fb;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.95rem;
     color: var(--color-text-primary);
+    box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04);
+    transition:
+      border-color var(--ease-fast),
+      box-shadow var(--ease-fast),
+      background-color var(--ease-fast);
   }
   .input-base::placeholder {
     color: var(--color-text-placeholder);
   }
+  .input-base:hover {
+    background: #fff;
+    border-color: rgba(255, 232, 18, 0.45);
+  }
   .input-base:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--focus-ring);
+    border-color: var(--color-primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 232, 18, 0.3);
+  }
+  .input-base:disabled {
+    background: #eff1f6;
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+  .input-base.input-error {
+    background: #fff;
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+  }
+}
+
+/* =============================================================================
+   Utilities — 토큰을 바로 쓰기 위한 최소 단축 클래스
+   - 컴포넌트 형태를 암시하는 클래스(예: .btn, .card) 생성 금지
+   - ※ 컴포넌트 사용 클래스와 1:1 매칭되는 유틸 추가(gradient/glass/shadow 등)
+============================================================================= */
+@layer utilities {
+  /* Background */
+  .bg-app {
+    background-color: var(--color-bg-app);
+  }
+  .bg-surface {
+    background-color: var(--color-surface);
+  }
+  .bg-hover {
+    background-color: var(--color-hover-surface);
+  }
+  .bg-secondary {
+    background-color: var(--color-secondary-bg);
   }
 
-  /* Text helpers */
+  /* Text */
+  .text-body {
+    color: var(--color-text-primary);
+  }
   .text-secondary {
     color: var(--color-text-secondary);
   }
-  .text-muted {
+  .text-muted,
+  .text-muted-foreground {
     color: var(--color-text-muted);
   }
   .text-success {
@@ -211,7 +280,7 @@
     color: var(--color-error);
   }
 
-  /* Borders / dividers */
+  /* Border */
   .border-divider {
     border-color: var(--color-border);
   }
@@ -219,20 +288,58 @@
     border-color: var(--color-border-muted);
   }
 
-  /* Charts (simple color tokens) */
-  .chart-1 {
-    color: var(--color-primary);
+  /* Placeholder (입력 컨트롤용 보조 클래스) */
+  .placeholder-muted::-webkit-input-placeholder {
+    color: var(--color-text-placeholder);
   }
-  .chart-2 {
-    color: var(--color-accent);
+  .placeholder-muted::placeholder {
+    color: var(--color-text-placeholder);
   }
-  .chart-3 {
-    color: var(--color-success);
+
+  /* Focus (접근성 보조) */
+  .focus-ring {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--focus-ring);
   }
-  .chart-4 {
-    color: var(--color-warning);
+
+  /* Effects */
+  .glass-bg {
+    background: var(--color-glass);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--color-sidebar-border);
   }
-  .chart-5 {
-    color: var(--color-error);
+
+  /* ===== 컴포넌트에서 쓰는 클래스와 1:1 매칭 추가 ===== */
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* 그라데이션 (두 네이밍 다 지원) */
+  .gradient-primary {
+    background: var(--gradient-primary);
+    color: var(--color-text-primary);
+  }
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+    color: var(--color-text-primary);
+  }
+
+  /* 글래스 패널 */
+  .glass-panel {
+    background: var(--color-glass);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--color-sidebar-border);
+  }
+
+  /* 노란 글로우 */
+  .shadow-glow {
+    box-shadow: 0 10px 30px rgba(255, 232, 18, 0.35);
+  }
+
+  /* 페이지 배경(첫 번째 스샷 톤) */
+  .app-bg {
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #e5e7eb 100%);
   }
 }

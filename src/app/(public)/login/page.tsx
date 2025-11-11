@@ -1,11 +1,16 @@
+import type { Metadata } from 'next';
 import LoginForm from '@/features/auth/login-form/LoginForm.client';
-export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: '로그인 | VIBOT Admin',
+};
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto max-w-md p-6">
-      <h1 className="text-2xl font-semibold mb-4">로그인</h1>
-      <LoginForm />
+    <main className="min-h-screen bg-[#F4F6FB] px-4 py-12">
+      <div className="mx-auto flex max-w-7xl items-center justify-center">
+        <LoginForm />
+      </div>
     </main>
   );
 }
