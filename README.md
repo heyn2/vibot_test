@@ -1,22 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Vibot Admin — Next.js 16 + Tailwind v4 + TS + React Query + Zustand
 
 ## Getting Started
 
-First, run the development server:
+Requirements
+
+- Node >= 18.18 (package.json engines 참조)
+- npm (or your team’s package manager)
+
+Environment
+
+- 복제 후 `.env.example`를 참고해 `.env.local` 파일을 만듭니다.
+- 백엔드가 준비되지 않았다면 `NEXT_PUBLIC_API_BASE`는 비워둡니다. 이 경우 내부 Next API(`/api/...`)를 사용합니다.
+- 백엔드 연결 시 `NEXT_PUBLIC_API_BASE`를 API 서버의 public URL로 설정하세요.
+
+Getting Started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Project Structure
+
+- `src/app` — App Router. `(public)`/`(protected)` 라우트 그룹과 내부 API(`/api`) 포함
+- `src/shared` — 공용 레이어(lib, ui, styles, config, model)
+- `src/entities` — 도메인 엔티티(API, model/types)
+- `src/features` — 유즈케이스 단위의 UI/로직 조합
+
+Conventions
+
+- 글로벌 CSS는 루트 레이아웃에서 1회 임포트
+- 네트워킹: axios 인스턴스(`src/shared/lib/axios.ts`) 사용. 401 시 `/api/auth/refresh` 호출 후 재시도
+- 폼/기능에서 엔티티 API를 통해 호출(직접 fetch 지양)
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
