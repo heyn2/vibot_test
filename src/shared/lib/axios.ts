@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? '';
 
@@ -8,35 +8,51 @@ export const http = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-let isRefreshing = false;
-let pendingQueue: Array<() => void> = [];
+const refreshClient = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true,
+});
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & { _retry?: boolean };
+
+let refreshPromise: Promise<void> | null = null;
+
+const ensureRefresh = () => {
+  if (!refreshPromise) {
+    refreshPromise = refreshClient
+      .post('/auth/refresh')
+      .then(() => undefined)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+};
+
+const handleUnauthorized = () => {
+  if (typeof window !== 'undefined') {
+    window.location.assign('/login');
+  }
+};
 
 http.interceptors.response.use(
   (res) => res,
-  async (error) => {
-    const { response, config } = error || {};
-    if (!response || !config) throw error;
+  async (error: AxiosError) => {
+    const { response } = error;
+    const requestConfig = error.config as RetryableRequestConfig | undefined;
 
-    if (response.status === 401 && !config._retry) {
-      if (isRefreshing) {
-        await new Promise<void>((resolve) => pendingQueue.push(resolve));
-      } else {
-        isRefreshing = true;
-        try {
-          await http.post('/auth/refresh');
-          pendingQueue.forEach((fn) => fn());
-        } catch (e) {
-          throw error;
-        } finally {
-          isRefreshing = false;
-          pendingQueue = [];
-        }
-      }
-
-      config._retry = true;
-      return http(config);
+    if (!response || !requestConfig || response.status !== 401 || requestConfig._retry) {
+      throw error;
     }
-    throw error;
+
+    try {
+      await ensureRefresh();
+      requestConfig._retry = true;
+      return http(requestConfig);
+    } catch (refreshError) {
+      handleUnauthorized();
+      throw refreshError;
+    }
   },
 );
 

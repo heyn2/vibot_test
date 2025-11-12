@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
 import { register } from '@/entities/user/api/register.client';
+import { Input } from '@/shared/ui/input';
+import { Checkbox } from '@/shared/ui/checkbox';
+import { Button } from '@/shared/ui/button';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -32,27 +35,16 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <input name="email" type="email" required className="input-base" placeholder="이메일" />
-      <input name="name" required className="input-base" placeholder="이름" />
-      <input
-        name="password"
-        type="password"
-        required
-        className="input-base"
-        placeholder="비밀번호"
-      />
-      <label className="flex items-center gap-2 text-sm">
-        <input name="termsAgree" type="checkbox" /> 약관에 동의합니다
+      <Input name="email" type="email" required placeholder="이메일" />
+      <Input name="name" required placeholder="이름" />
+      <Input name="password" type="password" required placeholder="비밀번호" />
+      <label className="flex items-center gap-2 text-sm text-body">
+        <Checkbox name="termsAgree" /> 약관에 동의합니다
       </label>
       {error && <p className="text-sm text-error">{error}</p>}
-      <button
-        type="submit"
-        className="btn-primary w-full"
-        disabled={pending}
-        aria-busy={pending ? 'true' : 'false'}
-      >
-        {pending ? '처리 중…' : '가입하기'}
-      </button>
+      <Button type="submit" fullWidth isLoading={pending} aria-busy={pending ? 'true' : 'false'}>
+        가입하기
+      </Button>
     </form>
   );
 }

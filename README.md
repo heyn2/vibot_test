@@ -18,6 +18,10 @@ Vibot Admin — Next.js 16 + Tailwind v4 + TypeScript + React Query + Zustand
     - `NEXT_PUBLIC_API_BASE=http://localhost:4000`
   - 모킹 토글(선택):
     - `NEXT_PUBLIC_USE_MOCK=true|false`
+  - 보호 라우트를 백엔드 없이 먼저 보고 싶다면 개발 환경에서만 아래 값을 추가:
+    - `BYPASS_AUTH=true` (미들웨어가 인증 검사를 건너뜁니다)
+    - 필요 시 클라이언트 코드도 우회를 확인하려면 `NEXT_PUBLIC_BYPASS_AUTH=true` 설정
+  - 실서버 연동 시에는 위 두 값을 제거하고 실제 로그인 플로우로 세션 쿠키(`access_token` 기본)를 발급받아야 합니다.
 
 - Run
   - `npm install`
@@ -129,6 +133,7 @@ export async function registerUser(body: RegisterBody) {
 - `npm run start` — 빌드 산출물 실행
 - `npm run lint` — ESLint 실행
 - `npm run format` — Prettier 포맷 적용
+- `npm run test` — Vitest + Testing Library 실행
 
 ## Environment
 
@@ -142,6 +147,18 @@ export async function registerUser(body: RegisterBody) {
   - `Access-Control-Allow-Origin`에 FE 오리진 지정
   - `Access-Control-Allow-Credentials: true`
   - 쿠키: `SameSite=None; Secure`(+ Domain)
+- 보호 라우트 가드:
+  - 세션 쿠키 이름은 `NEXT_PUBLIC_AUTH_COOKIE`(기본값 `access_token`)로 변경 가능
+  - 개발 편의를 위해 `BYPASS_AUTH=true` 혹은 `NEXT_PUBLIC_BYPASS_AUTH=true`로 가드를 비활성화할 수 있지만, 배포 전 반드시 제거하세요.
+
+## Testing
+
+- 러너: [Vitest](https://vitest.dev/) + [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/)
+- 설정 파일:
+  - `vitest.config.ts` — jsdom 환경, `@` alias, 커버리지 리포트 정의
+  - `vitest.setup.ts` — `@testing-library/jest-dom` 전역 등록 및 테스트마다 `cleanup()` 실행
+- 실행: `npm run test` (watch 모드), CI나 일회성 실행은 `npx vitest run`
+- 현재는 `src/entities/user/api/login.client.ts`와 `src/features/auth/login-form/LoginForm.client.tsx`가 예시 테스트로 포함되어 있습니다. 새로운 엔티티/컴포넌트를 추가할 때 동일한 위치에 테스트를 두고 커버리지를 유지해 주세요.
 
 ## API Strategy(고정)
 
@@ -161,3 +178,5 @@ export async function registerUser(body: RegisterBody) {
   - axios는 withCredentials=true. 서버 CORS/쿠키 설정 확인(위 참고)
 - Node 버전 불일치
   - `package.json`의 `engines`와 로컬 버전 맞추기
+- 보호 라우트가 `/login?next=...`로 리다이렉트됨
+  - 세션 쿠키가 없으면 정상 동작입니다. 개발 중 임시로 접근해야 한다면 `.env.local`에 `BYPASS_AUTH=true`를 추가하고 dev 서버를 재시작하세요.
